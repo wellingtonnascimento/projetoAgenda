@@ -6,6 +6,8 @@ exports.index = (req, res) =>{
 
 
 exports.register = async (req, res) => {
+   
+    try {    
     const login = new Login(req.body);
     await login.register();
 
@@ -16,5 +18,13 @@ exports.register = async (req, res) => {
         });
         return;
     }
-    res.send(login.errors);
+    req.flash('success', 'Seu usuario foi criado com sucesso.');
+    req.session.save(function(){
+        return res.redirect('back');
+    });
+    } catch (e) {
+        console.log(e);
+        return res.render('404');
+    }
+
 };
