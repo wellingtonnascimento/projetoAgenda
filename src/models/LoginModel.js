@@ -21,7 +21,9 @@ class Login{
         this.valida();
         if(this.errors.length >0) return;
 
+        await this.userExists();
 
+        if(this.errors.length >0) return;
 
         const salt = bcryptjs.genSaltSync();
         this.body.password = bcryptjs.hashSync(this.body.password, salt);
@@ -35,7 +37,11 @@ class Login{
        
     }
 
+    async userExists(){
+       const user = await LoginModel.findOne({email: this.body.email});
 
+       if(user) this.errors.push('Usuario já existe');
+    }
     valida(){
         this.cleanUp();
         //Validação
